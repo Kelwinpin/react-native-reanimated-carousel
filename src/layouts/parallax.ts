@@ -1,39 +1,42 @@
-import { Extrapolation, interpolate } from "react-native-reanimated";
+import { Extrapolate, interpolate } from "react-native-reanimated";
 
 import type { IComputedDirectionTypes } from "../types";
 
 interface TBaseConfig {
-  size: number;
-  vertical: boolean;
+  size: number
+  vertical: boolean
 }
 
 export interface ILayoutConfig {
   /**
-   * control prev/next item offset.
-   * @default 100
-   */
-  parallaxScrollingOffset?: number;
+     * control prev/next item offset.
+     * @default 100
+     */
+  parallaxScrollingOffset?: number
   /**
-   * control prev/current/next item offset.
-   * @default 0.8
-   */
-  parallaxScrollingScale?: number;
+     * control prev/current/next item offset.
+     * @default 0.8
+     */
+  parallaxScrollingScale?: number
   /**
-   * control prev/next item offset.
-   * @default Math.pow(parallaxScrollingScale, 2)
-   */
-  parallaxAdjacentItemScale?: number;
+     * control prev/next item offset.
+     * @default Math.pow(parallaxScrollingScale, 2)
+     */
+  parallaxAdjacentItemScale?: number
 }
 
 export type TParallaxModeProps = IComputedDirectionTypes<{
   /**
-   * Carousel Animated transitions.
-   */
-  mode?: "parallax";
-  modeConfig?: ILayoutConfig;
+     * Carousel Animated transitions.
+     */
+  mode?: "parallax"
+  modeConfig?: ILayoutConfig
 }>;
 
-export function parallaxLayout(baseConfig: TBaseConfig, modeConfig: ILayoutConfig = {}) {
+export function parallaxLayout(
+  baseConfig: TBaseConfig,
+  modeConfig: ILayoutConfig = {},
+) {
   const { size, vertical } = baseConfig;
   const {
     parallaxScrollingOffset = 100,
@@ -46,27 +49,31 @@ export function parallaxLayout(baseConfig: TBaseConfig, modeConfig: ILayoutConfi
     const translate = interpolate(
       value,
       [-1, 0, 1],
-      [-size + parallaxScrollingOffset, 0, size - parallaxScrollingOffset]
+      [-size + parallaxScrollingOffset, 0, size - parallaxScrollingOffset],
     );
 
-    const zIndex = Math.round(interpolate(value, [-1, 0, 1], [0, size, 0], Extrapolation.CLAMP));
+    const zIndex = Math.round(interpolate(value, [-1, 0, 1], [0, size, 0]));
 
     const scale = interpolate(
       value,
       [-1, 0, 1],
-      [parallaxAdjacentItemScale, parallaxScrollingScale, parallaxAdjacentItemScale],
-      Extrapolation.CLAMP
+      [
+        parallaxAdjacentItemScale,
+        parallaxScrollingScale,
+        parallaxAdjacentItemScale,
+      ],
+      Extrapolate.CLAMP,
     );
 
     return {
       transform: [
         vertical
           ? {
-              translateY: translate,
-            }
+            translateY: translate,
+          }
           : {
-              translateX: translate,
-            },
+            translateX: translate,
+          },
         {
           scale,
         },
